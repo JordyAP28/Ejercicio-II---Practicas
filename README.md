@@ -18,8 +18,14 @@ También se podrá cambiar el idioma entre español, inglés y portugués.
 - El menú permite cambiar entre Login, Jokes y Wifi.
 - El botón seleccionado se muestra en azul.
 - Las tres pantallas tienen el mismo estilo de colores y tarjetas.
+- Login tiene campos de usuario y contraseña, un botón para mostrar u ocultar la contraseña y el botón Ingresar. Es una interfaz visual: no exige reglas de complejidad ni valida credenciales. Al pulsar Ingresar, avisa que no se inició sesión porque es una demostración.
 
-Por ahora las pantallas solo muestran su título y una descripción. Todavía faltan los campos del login, la consulta de chistes, el escaneo Wi-Fi y el cambio de idioma.
+Las pantallas Jokes y Wifi todavía muestran solo su título y una descripción. Quedan pendientes la consulta de chistes, el escaneo Wi-Fi y el cambio de idioma.
+
+## Avances
+
+- **Fase 1:** proyecto base y menú con las tres pantallas.
+- **Fase 2:** Login de demostración completado. Se probó en el teléfono la contraseña oculta, Mostrar/Ocultar, el aviso de demostración y el desplazamiento con el teclado abierto.
 
 ## Archivos principales
 
@@ -82,10 +88,14 @@ Consultar chistes nuevos sí necesitará internet. Buscar redes Wi-Fi cercanas n
 2. Pulsar los botones Login, Jokes y Wifi.
 3. Revisar que cambien el título y la descripción de la tarjeta.
 4. Comprobar que solo el botón seleccionado quede azul.
+5. En Login, escribir un usuario y una contraseña de prueba. Revisar que la contraseña aparezca oculta.
+6. Pulsar Mostrar: la contraseña debe verse sin perder el texto escrito. Pulsar Ocultar para esconderla otra vez.
+7. Pulsar Ingresar con el teclado abierto: debe cerrarse y aparecer el mensaje de que no se inició sesión porque es una demostración.
+8. Con el teclado abierto, deslizar la pantalla hacia arriba: se debe poder llegar a Mostrar/Ocultar e Ingresar sin cerrar el teclado.
 
 ## Pendientes antes de la entrega
 
-- Completar las funciones de cada pantalla y los idiomas.
+- Completar Jokes, Wifi y el cambio de idioma.
 - Revisar los avisos de seguridad que mostró npm al instalar las librerías.
 - Preparar y probar la versión que funcionará sin la computadora.
 - Actualizar este README con los avances.

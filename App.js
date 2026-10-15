@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
-  Platform, Pressable, ScrollView, StatusBar as NativeStatusBar,
+  KeyboardAvoidingView, Platform, Pressable, ScrollView, StatusBar as NativeStatusBar,
   StyleSheet, Text, View,
 } from 'react-native';
 import LoginScreen from './screens/LoginScreen';
@@ -20,42 +20,53 @@ export default function App() {
   const [activeScreen, setActiveScreen] = useState('login');
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
       <StatusBar style="dark" />
-      <View style={styles.header}>
-        <Text style={styles.title}>App</Text>
-        <Text style={styles.description}>Selecciona una opción</Text>
-      </View>
+      {/* Todo el contenido puede desplazarse cuando el teclado ocupa espacio. */}
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="none"
+      >
+        <View style={styles.header}>
+          <Text style={styles.title}>App</Text>
+          <Text style={styles.description}>Selecciona una opción</Text>
+        </View>
 
-      <View style={styles.menu}>
-        {menuItems.map((item) => (
-          <Pressable
-            key={item.id}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: activeScreen === item.id }}
-            onPress={() => setActiveScreen(item.id)}
-            style={({ pressed }) => [
-              styles.menuButton,
-              activeScreen === item.id && styles.activeButton,
-              pressed && styles.pressedButton,
-            ]}
-          >
-            <Text style={[
-              styles.menuLabel,
-              activeScreen === item.id && styles.activeLabel,
-            ]}>
-              {item.label}
-            </Text>
-          </Pressable>
-        ))}
-      </View>
+        <View style={styles.menu}>
+          {menuItems.map((item) => (
+            <Pressable
+              key={item.id}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: activeScreen === item.id }}
+              onPress={() => setActiveScreen(item.id)}
+              style={({ pressed }) => [
+                styles.menuButton,
+                activeScreen === item.id && styles.activeButton,
+                pressed && styles.pressedButton,
+              ]}
+            >
+              <Text style={[
+                styles.menuLabel,
+                activeScreen === item.id && styles.activeLabel,
+              ]}>
+                {item.label}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
 
-      <ScrollView contentContainerStyle={styles.content}>
-        {activeScreen === 'login' && <LoginScreen />}
-        {activeScreen === 'jokes' && <JokesScreen />}
-        {activeScreen === 'wifi' && <WifiScreen />}
+        <View style={styles.content}>
+          {activeScreen === 'login' && <LoginScreen />}
+          {activeScreen === 'jokes' && <JokesScreen />}
+          {activeScreen === 'wifi' && <WifiScreen />}
+        </View>
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -70,6 +81,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 24,
     paddingBottom: 24,
+  },
+  scroll: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
   },
   title: {
     color: colors.title,
