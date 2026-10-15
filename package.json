@@ -1,0 +1,19 @@
+{
+  "name": "shellcatch-app",
+  "description": "Aplicación móvil de la prueba técnica Shellcatch.",
+  "private": true,
+  "license": "0BSD",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "expo": "~57.0.29",
+    "expo-dev-client": "~57.0.20",
+    "expo-status-bar": "~57.0.1",
+    "react": "19.2.3",
+    "react-native": "0.86.3"
+  },
+  "scripts": {
+    "start": "node --dns-result-order=ipv4first ./node_modules/expo/bin/cli start --dev-client --localhost",
+    "android": "expo run:android --device"
+  }
+}
