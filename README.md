@@ -20,18 +20,20 @@ También se podrá cambiar el idioma entre español, inglés y portugués.
 - Las tres pantallas tienen el mismo estilo de colores y tarjetas.
 - Login tiene campos de usuario y contraseña, un botón para mostrar u ocultar la contraseña y el botón Ingresar. Es una interfaz visual: no exige reglas de complejidad ni valida credenciales. Al pulsar Ingresar, avisa que no se inició sesión porque es una demostración.
 
-Las pantallas Jokes y Wifi todavía muestran solo su título y una descripción. Quedan pendientes la consulta de chistes, el escaneo Wi-Fi y el cambio de idioma.
+Jokes consulta un chiste al abrir la pantalla y permite pedir otro con Actualizar. Mientras espera, muestra un indicador de carga y desactiva el botón. Si falla la conexión o el servicio, muestra un mensaje y permite volver a intentarlo. Wifi todavía muestra solo su título y una descripción.
 
 ## Avances
 
 - **Fase 1:** proyecto base y menú con las tres pantallas.
 - **Fase 2:** Login de demostración completado. Se probó en el teléfono la contraseña oculta, Mostrar/Ocultar, el aviso de demostración y el desplazamiento con el teclado abierto.
+- **Fase 3:** apartado de chistes completado. Se probó la carga, el botón Actualizar, el mensaje sin internet y la recuperación al volver a conectarse.
 
 ## Archivos principales
 
 - `App.js`: tiene el menú y decide qué pantalla mostrar.
 - `screens/`: guarda el archivo de cada pantalla.
 - `styles/theme.js`: reúne los colores y estilos que se usan en varias pantallas.
+- `services/jokesApi.js`: hace la consulta al servicio de chistes y devuelve el texto recibido.
 - `app.json`: contiene el nombre y la configuración de la aplicación.
 - `package.json`: contiene las librerías y los comandos del proyecto.
 
@@ -92,10 +94,12 @@ Consultar chistes nuevos sí necesitará internet. Buscar redes Wi-Fi cercanas n
 6. Pulsar Mostrar: la contraseña debe verse sin perder el texto escrito. Pulsar Ocultar para esconderla otra vez.
 7. Pulsar Ingresar con el teclado abierto: debe cerrarse y aparecer el mensaje de que no se inició sesión porque es una demostración.
 8. Con el teclado abierto, deslizar la pantalla hacia arriba: se debe poder llegar a Mostrar/Ocultar e Ingresar sin cerrar el teclado.
+9. Abrir Jokes con internet: debe cargar un chiste. Pulsar Actualizar para hacer una nueva consulta.
+10. Desactivar internet en el teléfono y pulsar Actualizar: debe aparecer un error, como máximo después de unos 15 segundos. Activar internet y volver a pulsar Actualizar para recuperarse.
 
 ## Pendientes antes de la entrega
 
-- Completar Jokes, Wifi y el cambio de idioma.
+- Completar Wifi y el cambio de idioma.
 - Revisar los avisos de seguridad que mostró npm al instalar las librerías.
 - Preparar y probar la versión que funcionará sin la computadora.
 - Actualizar este README con los avances.
