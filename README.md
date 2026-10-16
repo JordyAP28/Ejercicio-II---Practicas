@@ -4,7 +4,7 @@ Este proyecto corresponde al ejercicio 2 de la prueba técnica. Es una aplicaci�
 
 ## ¿Qué hace la aplicación?
 
-La aplicación tendrá un menú con tres opciones:
+La aplicación tiene un menú con tres opciones:
 
 - **Login:** una pantalla con campos de usuario y contraseña, sin iniciar sesión realmente.
 - **Jokes:** mostrar un chiste de Chuck Norris y permitir pedir otro.
@@ -58,7 +58,7 @@ $env:Path = "$env:JAVA_HOME\bin;$env:ANDROID_HOME\platform-tools;$env:Path"
 Para instalar las librerías del proyecto y ejecutar la aplicación por primera vez:
 
 ```powershell
-npm install
+npm ci
 npm run android
 ```
 
@@ -87,13 +87,13 @@ $env:EXPO_OFFLINE = '1'
 npm start
 ```
 
-La versión actual necesita que Metro siga abierto en la computadora. Para la entrega se preparará otra versión que se pueda abrir directamente desde el teléfono. Esa versión todavía está pendiente.
+La versión de desarrollo necesita Metro abierto en la computadora. El APK de entrega incluye el código de la aplicación y se abre directamente desde el teléfono, sin servidor de desarrollo ni conexión USB.
 
 Consultar chistes nuevos sí necesitará internet. Buscar redes Wi-Fi cercanas no requiere conectarse a ellas, pero sí aceptar los permisos que pida Android.
 
 ## Cómo probar lo que está listo
 
-1. Abrir App con Metro funcionando.
+1. Abrir App. Si se usa el APK de desarrollo, mantener Metro funcionando; con el APK de entrega no hace falta.
 2. Pulsar los botones Login, Jokes y Wifi.
 3. Revisar que cambien el título y la descripción de la tarjeta.
 4. Comprobar que solo el botón seleccionado quede azul.
@@ -105,13 +105,32 @@ Consultar chistes nuevos sí necesitará internet. Buscar redes Wi-Fi cercanas n
 10. Desactivar internet en el teléfono y pulsar Actualizar: debe aparecer un error, como máximo después de unos 15 segundos. Activar internet y volver a pulsar Actualizar para recuperarse.
 11. En Wifi, activar Wi-Fi y ubicación, pulsar Escanear redes y permitir ubicación precisa. Deben aparecer las redes detectadas, ordenadas de mayor a menor señal.
 12. Repetir con el Wi-Fi apagado o sin permiso de ubicación y comprobar que aparezca una indicación para corregirlo. Si se bloqueó el permiso, usar Abrir ajustes de la app.
+13. Cambiar entre Español, English y Português en cada pantalla. Revisar los botones, los campos y los mensajes de error. Los chistes mantienen el inglés de la API.
 
 La lista usa `FlatList`, el componente actual para listas de React Native. Los resultados son los que devuelve la librería; no se agregan redes de ejemplo. Android limita la frecuencia de los escaneos, por lo que conviene esperar entre intentos si rechaza uno.
 
-## Pendientes antes de la entrega
+## APK para la demostración
 
-- Revisar los avisos de seguridad que mostró npm al instalar las librerías.
-- Preparar y probar la versión que funcionará sin la computadora.
-- Actualizar este README con los avances.
+Con Java y Android SDK configurados como se explicó arriba, se puede compilar desde la carpeta del proyecto:
+
+```powershell
+npm ci
+npx expo prebuild --platform android --no-install
+$env:NODE_ENV = 'production'
+.\android\gradlew.bat -p android app:assembleRelease -PreactNativeArchitectures=arm64-v8a
+Remove-Item Env:NODE_ENV
+```
+
+El archivo se genera en `android/app/build/outputs/apk/release/app-release.apk`. Esta compilación es para teléfonos Android ARM de 64 bits, como el usado en las pruebas. Si se necesita otra arquitectura, hay que ajustar el parámetro de compilación.
+
+Para esta entrega se generó también una copia llamada `App-Entrega.apk` en la carpeta del proyecto y en Descargas del teléfono. Se comprobó que incluye el código JavaScript, tiene una firma válida y usa la misma firma que la versión anterior para permitir actualizarla.
+
+Para instalarlo, copiar el APK al teléfono, abrirlo desde Archivos y completar los avisos de Android. Si ya está instalada App, debe ofrecer actualizarla. Después se puede cerrar Metro y desconectar el USB para comprobar que abre por sí sola. La instalación y la prueba final de este APK están pendientes de confirmar.
+
+Se utiliza la firma de depuración del proyecto para esta demostración técnica. Publicarlo en una tienda requeriría una clave de firma propia. El APK se entrega por separado; no se guarda como parte del código en Git.
+
+## Revisión de dependencias
+
+La revisión final con `npm audit` reportó 22 avisos: 7 moderados y 15 altos. La simulación de correcciones con `npm audit fix --dry-run` siguió mostrando los 22 avisos. Algunas soluciones propuestas cambian Expo o React Native por versiones mayores anteriores, por lo que no se aplicó `--force`. Queda pendiente resolver estos avisos con versiones compatibles y volver a probar antes de usar el proyecto en producción.
 
 Aunque el punto 7 del ejercicio menciona servidor y página web, las funciones del ejercicio 2 corresponden a una aplicación móvil. Por eso este proyecto se centra en la app de React Native.
