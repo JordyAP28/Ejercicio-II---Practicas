@@ -3,7 +3,7 @@ import { ActivityIndicator, FlatList, Linking, Pressable, StyleSheet, Text, View
 import { scanWifiNetworks } from '../services/wifiService';
 import { colors, screenStyles } from '../styles/theme';
 
-export default function WifiScreen({ navigationHeader }) {
+export default function WifiScreen({ navigationHeader, texts }) {
   const [networks, setNetworks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -18,7 +18,7 @@ export default function WifiScreen({ navigationHeader }) {
       setNetworks(await scanWifiNetworks());
       setHasScanned(true);
     } catch (scanError) {
-      setError(scanError.message || 'No se pudieron detectar las redes. Intenta de nuevo.');
+      setError(scanError.message || 'scanError');
     } finally {
       setLoading(false);
     }
@@ -35,9 +35,9 @@ export default function WifiScreen({ navigationHeader }) {
           {navigationHeader}
           <View style={styles.header}>
             <View style={screenStyles.card}>
-              <Text style={screenStyles.title}>Wifi</Text>
-              <Text style={screenStyles.description}>Detecta las redes Wi-Fi cercanas.</Text>
-              <Text style={styles.hint}>Activa Wi-Fi y ubicación. Android necesita permiso de ubicación precisa para escanear.</Text>
+              <Text style={screenStyles.title}>{texts.wifi}</Text>
+              <Text style={screenStyles.description}>{texts.wifiDescription}</Text>
+              <Text style={styles.hint}>{texts.wifiHint}</Text>
               <Pressable
                 accessibilityRole="button"
                 accessibilityState={{ disabled: loading }}
@@ -46,34 +46,34 @@ export default function WifiScreen({ navigationHeader }) {
                 style={({ pressed }) => [screenStyles.button, (pressed || loading) && screenStyles.buttonPressed]}
               >
                 {loading && <ActivityIndicator color={colors.surface} />}
-                <Text style={screenStyles.buttonText}>{loading ? 'Escaneando...' : 'Escanear redes'}</Text>
+                <Text style={screenStyles.buttonText}>{loading ? texts.scanning : texts.scan}</Text>
               </Pressable>
               {error ? (
                 <>
-                  <Text accessibilityRole="alert" style={styles.error}>{error}</Text>
+                  <Text accessibilityRole="alert" style={styles.error}>{texts[error] || texts.scanError}</Text>
                   <Pressable
                     accessibilityRole="button"
-                    onPress={() => Linking.openSettings().catch(() => setError('Abre los ajustes del teléfono y revisa los permisos de App.'))}
+                    onPress={() => Linking.openSettings().catch(() => setError('settingsError'))}
                     style={styles.settingsButton}
                   >
-                    <Text style={styles.settingsText}>Abrir ajustes de la app</Text>
+                    <Text style={styles.settingsText}>{texts.settings}</Text>
                   </Pressable>
                 </>
               ) : null}
-              {hasScanned && <Text style={screenStyles.note}>Redes encontradas: {networks.length}</Text>}
+              {hasScanned && <Text style={screenStyles.note}>{texts.networksFound}: {networks.length}</Text>}
             </View>
           </View>
         </>
       )}
       ListEmptyComponent={hasScanned && !loading ? (
-        <Text style={styles.empty}>No se encontraron redes cercanas. Puedes volver a escanear.</Text>
+        <Text style={styles.empty}>{texts.noNetworks}</Text>
       ) : null}
       renderItem={({ item }) => (
         <View style={styles.network}>
           <Text style={styles.networkName}>
-            {!item.SSID || item.SSID === '(hidden SSID)' ? 'Red oculta' : item.SSID}
+            {!item.SSID || item.SSID === '(hidden SSID)' ? texts.hiddenNetwork : item.SSID}
           </Text>
-          <Text style={styles.hint}>Señal: {item.level} dBm · Frecuencia: {item.frequency} MHz</Text>
+          <Text style={styles.hint}>{texts.signal}: {item.level} dBm · {texts.frequency}: {item.frequency} MHz</Text>
         </View>
       )}
     />

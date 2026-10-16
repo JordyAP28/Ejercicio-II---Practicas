@@ -10,7 +10,7 @@ La aplicación tendrá un menú con tres opciones:
 - **Jokes:** mostrar un chiste de Chuck Norris y permitir pedir otro.
 - **Wifi:** mostrar las redes Wi-Fi cercanas al teléfono.
 
-También se podrá cambiar el idioma entre español, inglés y portugués.
+El selector Idioma permite cambiar entre español, inglés y portugués sin reiniciar la aplicación. Traduce el menú, los campos, los botones y los mensajes. Los chistes conservan el texto original que devuelve la API y los nombres de las redes no se modifican. Al cerrar y volver a iniciar la aplicación, el idioma inicial es español.
 
 ## Lo que está listo
 
@@ -30,6 +30,7 @@ Wifi tiene un botón para escanear y una lista con el nombre, la señal y la fre
 - **Fase 2:** Login de demostración completado. Se probó en el teléfono la contraseña oculta, Mostrar/Ocultar, el aviso de demostración y el desplazamiento con el teclado abierto.
 - **Fase 3:** apartado de chistes completado. Se probó la carga, el botón Actualizar, el mensaje sin internet y la recuperación al volver a conectarse.
 - **Avance 4:** librería Wi-Fi instalada y lista de redes reales implementada con FlatList. Se comprobó el escaneo en el teléfono.
+- **Avance 5:** cambio entre español, inglés y portugués implementado y comprobado en el teléfono. Los textos de la interfaz cambian al momento; los chistes conservan el inglés original de la API.
 
 ## Archivos principales
 
@@ -39,6 +40,7 @@ Wifi tiene un botón para escanear y una lista con el nombre, la señal y la fre
 - `services/jokesApi.js`: hace la consulta al servicio de chistes y devuelve el texto recibido.
 - `services/wifiService.js`: comprueba el permiso y el Wi-Fi, solicita el escaneo y ordena las redes por señal.
 - `app.json`: contiene el nombre y la configuración de la aplicación.
+- `translations/languages.js`: contiene los textos de los tres idiomas. App.js guarda la selección y pasa los textos a cada pantalla.
 - `package.json`: contiene las librerías y los comandos del proyecto.
 
 ## Cómo ejecutar el proyecto
@@ -108,7 +110,6 @@ La lista usa `FlatList`, el componente actual para listas de React Native. Los r
 
 ## Pendientes antes de la entrega
 
-- Implementar el cambio de idioma.
 - Revisar los avisos de seguridad que mostró npm al instalar las librerías.
 - Preparar y probar la versión que funcionará sin la computadora.
 - Actualizar este README con los avances.

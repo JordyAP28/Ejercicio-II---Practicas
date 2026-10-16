@@ -3,7 +3,7 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-nati
 import { getRandomJoke } from '../services/jokesApi';
 import { colors, screenStyles } from '../styles/theme';
 
-export default function JokesScreen() {
+export default function JokesScreen({ texts }) {
   const [joke, setJoke] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -14,7 +14,7 @@ export default function JokesScreen() {
     try {
       setJoke(await getRandomJoke());
     } catch {
-      setError('No se pudo cargar el chiste. Revisa tu conexión e intenta de nuevo.');
+      setError('jokeError');
     } finally {
       setLoading(false);
     }
@@ -27,19 +27,19 @@ export default function JokesScreen() {
 
   return (
     <View style={screenStyles.card}>
-      <Text style={screenStyles.title}>Jokes</Text>
-      <Text style={screenStyles.description}>Chistes de Chuck Norris.</Text>
+      <Text style={screenStyles.title}>{texts.jokes}</Text>
+      <Text style={screenStyles.description}>{texts.jokesDescription}</Text>
 
       <View style={styles.jokeBox}>
         {loading ? (
           <View style={styles.loading}>
             <ActivityIndicator color={colors.primary} />
-            <Text style={screenStyles.description}>Cargando chiste...</Text>
+            <Text style={screenStyles.description}>{texts.jokeLoading}</Text>
           </View>
         ) : (
           joke ? <Text style={styles.joke}>{joke}</Text> : null
         )}
-        {error ? <Text accessibilityRole="alert" style={styles.error}>{error}</Text> : null}
+        {error ? <Text accessibilityRole="alert" style={styles.error}>{texts[error]}</Text> : null}
       </View>
 
       <Pressable
@@ -53,7 +53,7 @@ export default function JokesScreen() {
         ]}
       >
         <Text style={screenStyles.buttonText}>
-          {loading ? 'Cargando...' : 'Actualizar'}
+          {loading ? texts.loading : texts.refresh}
         </Text>
       </Pressable>
     </View>

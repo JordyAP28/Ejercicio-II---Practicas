@@ -8,22 +8,39 @@ import LoginScreen from './screens/LoginScreen';
 import JokesScreen from './screens/JokesScreen';
 import WifiScreen from './screens/WifiScreen';
 import { colors } from './styles/theme';
+import { languages, languageOptions } from './translations/languages';
 
 const menuItems = [
-  { id: 'login', label: 'Login' },
-  { id: 'jokes', label: 'Jokes' },
-  { id: 'wifi', label: 'Wifi' },
+  { id: 'login' },
+  { id: 'jokes' },
+  { id: 'wifi' },
 ];
 
 export default function App() {
   // La selección del menú decide qué pantalla se muestra.
   const [activeScreen, setActiveScreen] = useState('login');
+  const [language, setLanguage] = useState('es');
+  const texts = languages[language];
 
   const navigationHeader = (
     <>
       <View style={styles.header}>
         <Text style={styles.title}>App</Text>
-        <Text style={styles.description}>Selecciona una opción</Text>
+        <Text style={styles.description}>{texts.selectOption}</Text>
+        <Text style={styles.languageLabel}>{texts.language}</Text>
+        <View style={styles.languageOptions}>
+          {languageOptions.map((option) => (
+            <Pressable
+              key={option.id}
+              accessibilityRole="radio"
+              accessibilityState={{ checked: language === option.id }}
+              onPress={() => setLanguage(option.id)}
+              style={[styles.languageButton, language === option.id && styles.activeButton]}
+            >
+              <Text style={[styles.languageText, language === option.id && styles.activeLabel]}>{option.label}</Text>
+            </Pressable>
+          ))}
+        </View>
       </View>
 
       <View style={styles.menu}>
@@ -43,7 +60,7 @@ export default function App() {
               styles.menuLabel,
               activeScreen === item.id && styles.activeLabel,
             ]}>
-              {item.label}
+              {texts[item.id]}
             </Text>
           </Pressable>
         ))}
@@ -58,7 +75,7 @@ export default function App() {
     >
       <StatusBar style="dark" />
       {/* Wifi usa su propia lista; Login y Jokes comparten el desplazamiento. */}
-      {activeScreen === 'wifi' ? <WifiScreen navigationHeader={navigationHeader} /> : (
+      {activeScreen === 'wifi' ? <WifiScreen navigationHeader={navigationHeader} texts={texts} /> : (
         <ScrollView
           style={styles.scroll}
           contentContainerStyle={styles.scrollContent}
@@ -67,8 +84,8 @@ export default function App() {
         >
           {navigationHeader}
           <View style={styles.content}>
-            {activeScreen === 'login' && <LoginScreen />}
-            {activeScreen === 'jokes' && <JokesScreen />}
+            {activeScreen === 'login' && <LoginScreen texts={texts} />}
+            {activeScreen === 'jokes' && <JokesScreen texts={texts} />}
           </View>
         </ScrollView>
       )}
@@ -77,6 +94,10 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  languageLabel: { color: colors.secondary, fontSize: 14, marginTop: 20, marginBottom: 8 },
+  languageOptions: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  languageButton: { minHeight: 44, justifyContent: 'center', paddingHorizontal: 12, borderRadius: 10, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface },
+  languageText: { color: colors.title, fontSize: 14, fontWeight: '600' },
   container: {
     flex: 1,
     backgroundColor: colors.background,

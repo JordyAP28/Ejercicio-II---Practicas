@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Alert, Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { colors, screenStyles } from '../styles/theme';
 
-export default function LoginScreen() {
+export default function LoginScreen({ texts }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -10,20 +10,20 @@ export default function LoginScreen() {
   function handleLoginPress() {
     Keyboard.dismiss();
     // Mensaje para indicar que solo es una demostracion de inicio de sesion
-    Alert.alert('Inicio de sesión', 'No se inició sesión porque esta pantalla es una demostración.');
+    Alert.alert(texts.loginAlertTitle, texts.loginAlert, [{ text: texts.ok }]);
   }
 
   return (
     <View style={[screenStyles.card, styles.card]}>
-      <Text style={styles.eyebrow}>ACCESO A LA APLICACIÓN</Text>
-      <Text style={[screenStyles.title, styles.title]}>Iniciar sesión</Text>
-      <Text style={screenStyles.description}>Ingresa tu usuario y contraseña.</Text>
+      <Text style={styles.eyebrow}>{texts.access}</Text>
+      <Text style={[screenStyles.title, styles.title]}>{texts.signIn}</Text>
+      <Text style={screenStyles.description}>{texts.loginDescription}</Text>
 
-      <Text style={screenStyles.label}>Usuario</Text>
+      <Text style={screenStyles.label}>{texts.username}</Text>
       <TextInput
-        accessibilityLabel="Usuario"
+        accessibilityLabel={texts.username}
         style={screenStyles.input}
-        placeholder="Escribe tu usuario"
+        placeholder={texts.usernamePlaceholder}
         placeholderTextColor={colors.secondary}
         value={username}
         onChangeText={setUsername}
@@ -31,12 +31,12 @@ export default function LoginScreen() {
         autoCorrect={false}
       />
 
-      <Text style={screenStyles.label}>Contraseña</Text>
+      <Text style={screenStyles.label}>{texts.password}</Text>
       <View style={styles.passwordField}>
         <TextInput
-          accessibilityLabel="Contraseña"
+          accessibilityLabel={texts.password}
           style={[screenStyles.input, styles.passwordInput]}
-          placeholder="Escribe tu contraseña"
+          placeholder={texts.passwordPlaceholder}
           placeholderTextColor={colors.secondary}
           value={password}
           onChangeText={setPassword}
@@ -48,11 +48,11 @@ export default function LoginScreen() {
         />
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+          accessibilityLabel={showPassword ? texts.hidePassword : texts.showPassword}
           onPress={() => setShowPassword((previous) => !previous)}
           style={({ pressed }) => [styles.visibilityButton, pressed && screenStyles.buttonPressed]}
         >
-          <Text style={styles.visibilityText}>{showPassword ? 'Ocultar' : 'Mostrar'}</Text>
+          <Text style={styles.visibilityText}>{showPassword ? texts.hide : texts.show}</Text>
         </Pressable>
       </View>
 
@@ -64,9 +64,9 @@ export default function LoginScreen() {
           pressed && screenStyles.buttonPressed,
         ]}
       >
-        <Text style={screenStyles.buttonText}>Ingresar</Text>
+        <Text style={screenStyles.buttonText}>{texts.enter}</Text>
       </Pressable>
-      <Text style={[screenStyles.note, styles.note]}>Demostración de inicio de sesión.</Text>
+      <Text style={[screenStyles.note, styles.note]}>{texts.loginNote}</Text>
     </View>
   );
 }
