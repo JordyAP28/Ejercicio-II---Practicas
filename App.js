@@ -19,53 +19,59 @@ export default function App() {
   // La selección del menú decide qué pantalla se muestra.
   const [activeScreen, setActiveScreen] = useState('login');
 
+  const navigationHeader = (
+    <>
+      <View style={styles.header}>
+        <Text style={styles.title}>App</Text>
+        <Text style={styles.description}>Selecciona una opción</Text>
+      </View>
+
+      <View style={styles.menu}>
+        {menuItems.map((item) => (
+          <Pressable
+            key={item.id}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: activeScreen === item.id }}
+            onPress={() => setActiveScreen(item.id)}
+            style={({ pressed }) => [
+              styles.menuButton,
+              activeScreen === item.id && styles.activeButton,
+              pressed && styles.pressedButton,
+            ]}
+          >
+            <Text style={[
+              styles.menuLabel,
+              activeScreen === item.id && styles.activeLabel,
+            ]}>
+              {item.label}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+    </>
+  );
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <StatusBar style="dark" />
-      {/* Todo el contenido puede desplazarse cuando el teclado ocupa espacio. */}
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
-        keyboardDismissMode="none"
-      >
-        <View style={styles.header}>
-          <Text style={styles.title}>App</Text>
-          <Text style={styles.description}>Selecciona una opción</Text>
-        </View>
-
-        <View style={styles.menu}>
-          {menuItems.map((item) => (
-            <Pressable
-              key={item.id}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: activeScreen === item.id }}
-              onPress={() => setActiveScreen(item.id)}
-              style={({ pressed }) => [
-                styles.menuButton,
-                activeScreen === item.id && styles.activeButton,
-                pressed && styles.pressedButton,
-              ]}
-            >
-              <Text style={[
-                styles.menuLabel,
-                activeScreen === item.id && styles.activeLabel,
-              ]}>
-                {item.label}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
-
-        <View style={styles.content}>
-          {activeScreen === 'login' && <LoginScreen />}
-          {activeScreen === 'jokes' && <JokesScreen />}
-          {activeScreen === 'wifi' && <WifiScreen />}
-        </View>
-      </ScrollView>
+      {/* Wifi usa su propia lista; Login y Jokes comparten el desplazamiento. */}
+      {activeScreen === 'wifi' ? <WifiScreen navigationHeader={navigationHeader} /> : (
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="none"
+        >
+          {navigationHeader}
+          <View style={styles.content}>
+            {activeScreen === 'login' && <LoginScreen />}
+            {activeScreen === 'jokes' && <JokesScreen />}
+          </View>
+        </ScrollView>
+      )}
     </KeyboardAvoidingView>
   );
 }

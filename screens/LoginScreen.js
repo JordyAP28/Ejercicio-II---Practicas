@@ -9,7 +9,7 @@ export default function LoginScreen() {
 
   function handleLoginPress() {
     Keyboard.dismiss();
-    // El ejercicio pide una interfaz de login, sin autenticación real.
+    // Mensaje para indicar que solo es una demostracion de inicio de sesion
     Alert.alert('Inicio de sesión', 'No se inició sesión porque esta pantalla es una demostración.');
   }
 

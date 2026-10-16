@@ -20,13 +20,16 @@ También se podrá cambiar el idioma entre español, inglés y portugués.
 - Las tres pantallas tienen el mismo estilo de colores y tarjetas.
 - Login tiene campos de usuario y contraseña, un botón para mostrar u ocultar la contraseña y el botón Ingresar. Es una interfaz visual: no exige reglas de complejidad ni valida credenciales. Al pulsar Ingresar, avisa que no se inició sesión porque es una demostración.
 
-Jokes consulta un chiste al abrir la pantalla y permite pedir otro con Actualizar. Mientras espera, muestra un indicador de carga y desactiva el botón. Si falla la conexión o el servicio, muestra un mensaje y permite volver a intentarlo. Wifi todavía muestra solo su título y una descripción.
+Jokes consulta un chiste al abrir la pantalla y permite pedir otro con Actualizar. Mientras espera, muestra un indicador de carga y desactiva el botón. Si falla la conexión o el servicio, muestra un mensaje y permite volver a intentarlo.
+
+Wifi tiene un botón para escanear y una lista con el nombre, la señal y la frecuencia de cada red detectada. Usa `react-native-wifi-reborn` y solicita ubicación precisa antes de escanear. Se instaló el APK actualizado y se comprobó en el teléfono que aparecen las redes cercanas.
 
 ## Avances
 
 - **Fase 1:** proyecto base y menú con las tres pantallas.
 - **Fase 2:** Login de demostración completado. Se probó en el teléfono la contraseña oculta, Mostrar/Ocultar, el aviso de demostración y el desplazamiento con el teclado abierto.
 - **Fase 3:** apartado de chistes completado. Se probó la carga, el botón Actualizar, el mensaje sin internet y la recuperación al volver a conectarse.
+- **Avance 4:** librería Wi-Fi instalada y lista de redes reales implementada con FlatList. Se comprobó el escaneo en el teléfono.
 
 ## Archivos principales
 
@@ -34,6 +37,7 @@ Jokes consulta un chiste al abrir la pantalla y permite pedir otro con Actualiza
 - `screens/`: guarda el archivo de cada pantalla.
 - `styles/theme.js`: reúne los colores y estilos que se usan en varias pantallas.
 - `services/jokesApi.js`: hace la consulta al servicio de chistes y devuelve el texto recibido.
+- `services/wifiService.js`: comprueba el permiso y el Wi-Fi, solicita el escaneo y ordena las redes por señal.
 - `app.json`: contiene el nombre y la configuración de la aplicación.
 - `package.json`: contiene las librerías y los comandos del proyecto.
 
@@ -69,7 +73,7 @@ El primer comando conecta el teléfono con el proyecto por USB. El segundo inici
 
 Después se abre **App** en el teléfono. Si pide la dirección del servidor, se escribe `http://127.0.0.1:8081`.
 
-Se usa Expo Development Build porque la librería Wi-Fi que pide el ejercicio, `react-native-wifi-reborn`, no funciona en Expo Go. Esa librería se agregará cuando se trabaje en la pantalla Wifi.
+Se usa Expo Development Build porque la librería Wi-Fi que pide el ejercicio, `react-native-wifi-reborn`, no funciona en Expo Go. Está instalada la versión 4.13.6 y configurada en `app.json`. Al añadirla o cambiar los permisos hay que generar de nuevo el proyecto Android con `npx expo prebuild --platform android --no-install` y recompilar la aplicación.
 
 ## ¿Necesita internet?
 
@@ -77,7 +81,8 @@ Para trabajar por USB no hace falta que el teléfono y la computadora estén con
 
 ```powershell
 adb reverse tcp:8081 tcp:8081
-npm start -- --offline
+$env:EXPO_OFFLINE = '1'
+npm start
 ```
 
 La versión actual necesita que Metro siga abierto en la computadora. Para la entrega se preparará otra versión que se pueda abrir directamente desde el teléfono. Esa versión todavía está pendiente.
@@ -96,10 +101,14 @@ Consultar chistes nuevos sí necesitará internet. Buscar redes Wi-Fi cercanas n
 8. Con el teclado abierto, deslizar la pantalla hacia arriba: se debe poder llegar a Mostrar/Ocultar e Ingresar sin cerrar el teclado.
 9. Abrir Jokes con internet: debe cargar un chiste. Pulsar Actualizar para hacer una nueva consulta.
 10. Desactivar internet en el teléfono y pulsar Actualizar: debe aparecer un error, como máximo después de unos 15 segundos. Activar internet y volver a pulsar Actualizar para recuperarse.
+11. En Wifi, activar Wi-Fi y ubicación, pulsar Escanear redes y permitir ubicación precisa. Deben aparecer las redes detectadas, ordenadas de mayor a menor señal.
+12. Repetir con el Wi-Fi apagado o sin permiso de ubicación y comprobar que aparezca una indicación para corregirlo. Si se bloqueó el permiso, usar Abrir ajustes de la app.
+
+La lista usa `FlatList`, el componente actual para listas de React Native. Los resultados son los que devuelve la librería; no se agregan redes de ejemplo. Android limita la frecuencia de los escaneos, por lo que conviene esperar entre intentos si rechaza uno.
 
 ## Pendientes antes de la entrega
 
-- Completar Wifi y el cambio de idioma.
+- Implementar el cambio de idioma.
 - Revisar los avisos de seguridad que mostró npm al instalar las librerías.
 - Preparar y probar la versión que funcionará sin la computadora.
 - Actualizar este README con los avances.
