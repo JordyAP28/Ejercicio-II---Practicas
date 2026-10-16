@@ -1,4 +1,4 @@
-# App — Ejercicio II de Shellcatch
+# App — Ejercicio II
 
 Este proyecto corresponde al ejercicio 2 de la prueba técnica. Es una aplicación para Android hecha con React Native y JavaScript.
 
@@ -64,7 +64,7 @@ npm run android
 
 Hay que aceptar los avisos de instalación que aparezcan en el teléfono. Si la instalación por USB queda esperando, se puede copiar el archivo `android/app/build/outputs/apk/debug/app-debug.apk` a Descargas del teléfono y abrirlo desde Archivos.
 
-Si la aplicación ya está instalada, para volver a trabajar en ella:
+Si la versión de desarrollo ya está instalada, para volver a trabajar en ella:
 
 ```powershell
 adb reverse tcp:8081 tcp:8081
@@ -76,6 +76,41 @@ El primer comando conecta el teléfono con el proyecto por USB. El segundo inici
 Después se abre **App** en el teléfono. Si pide la dirección del servidor, se escribe `http://127.0.0.1:8081`.
 
 Se usa Expo Development Build porque la librería Wi-Fi que pide el ejercicio, `react-native-wifi-reborn`, no funciona en Expo Go. Está instalada la versión 4.13.6 y configurada en `app.json`. Al añadirla o cambiar los permisos hay que generar de nuevo el proyecto Android con `npx expo prebuild --platform android --no-install` y recompilar la aplicación.
+
+## Pasar del APK independiente al modo de desarrollo
+
+Ejecutar `npm start` no convierte el APK independiente en una versión de desarrollo. Primero hay que instalar la compilación de desarrollo encima de App. En este equipo ambas versiones usan el mismo paquete y la misma firma, así que permiten actualizar la instalación existente.
+
+Con el teléfono conectado, abre una terminal en la carpeta del proyecto y configura Java y Android SDK como se indicó arriba. Después ejecuta:
+
+```powershell
+adb devices
+Remove-Item Env:NODE_ENV -ErrorAction SilentlyContinue
+npm run android
+```
+
+El teléfono debe aparecer con el estado `device`. `npm run android` compila e intenta instalar la versión de desarrollo. Hay que completar los avisos del teléfono y seleccionar el dispositivo si se solicita. No es necesario volver a ejecutar `npm ci` si las dependencias ya están instaladas y no cambiaron.
+
+Si Android rechaza la instalación por USB, copia el APK de desarrollo y ábrelo desde Archivos en el teléfono:
+
+```powershell
+adb push ".\android\app\build\outputs\apk\debug\app-debug.apk" /sdcard/Download/App-Desarrollo.apk
+```
+
+Después de instalarlo, abre otra terminal con las herramientas de Android configuradas y ejecuta:
+
+```powershell
+adb reverse tcp:8081 tcp:8081
+npm start
+```
+
+Si Metro ya está funcionando en otra terminal, mantenlo abierto y no inicies una segunda copia; basta con ejecutar `adb reverse`. Abre App y selecciona el servidor `http://127.0.0.1:8081` si aparece el menú de desarrollo.
+
+### Ver los cambios al guardar
+
+Con la app de desarrollo conectada a Metro, guardar cambios de JavaScript, textos o estilos normalmente actualiza la pantalla mediante Fast Refresh. Si no aparecen, revisa que el archivo esté guardado y que Metro no muestre errores; puedes pulsar `r` en su terminal para recargar. Una recarga completa puede reiniciar los datos escritos en pantalla.
+
+Cambiar librerías nativas, permisos o configuración nativa requiere recompilar e instalar la versión correspondiente. El APK independiente conserva el código de su última compilación: no recibe automáticamente lo que se guarda en VS Code.
 
 ## ¿Necesita internet?
 
@@ -128,6 +163,33 @@ Para esta entrega se generó también una copia llamada `App-Entrega.apk` en la 
 Para instalarlo, copiar el APK al teléfono, abrirlo desde Archivos y completar los avisos de Android. Si ya está instalada App, debe ofrecer actualizarla. Después se puede cerrar Metro y desconectar el USB para comprobar que abre por sí sola. La instalación y la prueba final de este APK están pendientes de confirmar.
 
 Se utiliza la firma de depuración del proyecto para esta demostración técnica. Publicarlo en una tienda requeriría una clave de firma propia. El APK se entrega por separado; no se guarda como parte del código en Git.
+
+## Volver del desarrollo al APK independiente
+
+Si cambiaste únicamente JavaScript o estilos y el proyecto Android ya está generado, recompila desde la terminal con Java y Android SDK configurados:
+
+```powershell
+$env:NODE_ENV = 'production'
+.\android\gradlew.bat -p android app:assembleRelease -PreactNativeArchitectures=arm64-v8a
+Remove-Item Env:NODE_ENV
+```
+
+Cuando termine con `BUILD SUCCESSFUL`, actualiza la copia de entrega e instálala:
+
+```powershell
+Copy-Item ".\android\app\build\outputs\apk\release\app-release.apk" ".\App-Entrega.apk" -Force
+adb install --no-streaming -r ".\App-Entrega.apk"
+```
+
+Completa los avisos del teléfono y comprueba que la instalación termine con `Success`. Si Android la rechaza por USB, utiliza la instalación manual:
+
+```powershell
+adb push ".\App-Entrega.apk" /sdcard/Download/App-Entrega.apk
+```
+
+Abre Archivos → Descargas → App-Entrega.apk y actualiza hasta ver Aplicación instalada. Detén Metro con Ctrl+C, cierra App y vuelve a abrirla para comprobar que funciona por sí sola. Puedes mantener el USB conectado para reflejar la pantalla en Android Studio; la app no necesita Metro para ejecutarse.
+
+Si solo quieres reinstalar el APK de entrega existente y no incluir cambios nuevos, puedes omitir la compilación e instalar directamente `App-Entrega.apk`. Recuerda que los APK no están incluidos en Git: quien clone el repositorio debe generarlos o recibirlos por separado.
 
 ## Revisión de dependencias
 
